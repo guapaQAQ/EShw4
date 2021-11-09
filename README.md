@@ -1,99 +1,31 @@
-BLE_Button is a BLE service template. It handles a read-only characteristic with a simple input (boolean values). The input's source is the button on the board itself - the characteristic's value changes when the button is pressed or released.
-
-The template covers:
-
-1. Setting up advertising and connection modes.
-
-1. Creating an input characteristic: read-only, boolean, with notifications.
-
-1. Constructing a service class and adding it to the BLE stack.
-
-1. Assigning UUIDs to the service and its characteristic.
-
-1. Pushing notifications when the characteristic's value changes.
-
-# Running the application
-
-## Requirements
-
-The sample application can be seen on any BLE scanner on a smartphone. If you don't have a scanner on your phone, please install :
-
-- [nRF Master Control Panel](https://play.google.com/store/apps/details?id=no.nordicsemi.android.mcp) for Android.
-
-- [LightBlue](https://itunes.apple.com/gb/app/lightblue-bluetooth-low-energy/id557428110?mt=8) for iPhone.
-
-Hardware requirements are in the [main readme](https://github.com/ARMmbed/mbed-os-example-ble/blob/master/README.md).
-
-### Porting this example on new boards
-
-This example requires a board with at least a button to work. While the pin name of the button is defined for the `NRF51_DK`, `NRF52_DK`, `K64F` and `NUCLEO_F401RE`, it is not specified for other boards.
-
-It is easy to add the button configuration for your board:
-* Open the file named `mbed_app.json` at the root of this example.
-* In the section `target_overides` add a new object named after your target if it doesn't exist. This object contain overridden parameters for your target.
-* Override the property `ble_button_pin_name` in your target object. The value of the property should be equal to the pin name to use as a button.
-
-As an example, this is the JSON bit which has to be added in the `target_overrides` section of `mbed_app.json` for a `NUCLEO_F411RE` board.
-
-```json
-        "NUCLEO_F411RE": {
-            "ble_button_pin_name": "USER_BUTTON"
-        }
-```
-
-<span> **Note:** You can get more informations about the configuration system in the [documentation](https://github.com/ARMmbed/mbed-os/blob/master/docs/config_system.md)</span>
-
-<span> **Important:** If your target use an ST BLE shield, other parameters have to be overridden for your target. More information are available in the global [README](https://github.com/ARMmbed/mbed-os-example-ble/blob/master/README.md#targets-for-ble)</span>
-
-## Building instructions
-
-Building instructions for all samples are in the [main readme](https://github.com/ARMmbed/mbed-os-example-ble/blob/master/README.md).
-
-## Checking for success
-
-**Note:** Screens captures depicted below show what is expected from this example if the scanner used is *nRF Master Control Panel* version 4.0.5. If you encounter any difficulties consider trying another scanner or another version of nRF Master Control Panel. Alternative scanners may require reference to their manuals.
-
-1. Build the application and install it on your board as explained in the building instructions.
-1. Open the BLE scanner on your phone.
-1. Start a scan.
-
-    ![](img/start_scan.png)
-
-    **figure 1** How to start scan using nRF Master Control Panel 4.0.5
-
-1. Find your device; it should appear with the name `Button` in the scanner.
-
-    ![](img/scan_results.png)
-
-    **figure 2** Scan results using nRF Master Control Panel 4.0.5
-
-1. Establish a connection with the device.
-
-    ![](img/connection.png)
-
-    **figure 3**  How to establish a connection using Master Control Panel 4.0.5
-
-1. Discover the services and the characteristics on the device. The *Button service* has the UUID `0xA000` and includes the *Button state characteristic* which has the UUID `0xA001`. Depending on your scanner, non standard 16-bit UUID's can be displayed as 128-bit UUID's. If it is the case the following format will be used: `0000XXXX-0000-1000-8000-00805F9B34FB` where `XXXX` is the hexadecimal representation of the 16-bit UUID value.
-
-    ![](img/discovery.png)
-
-    **figure 4** Representation of the Button service using Master Control Panel 4.0.5
-
-1. Register for the notifications sent by the button state characteristic then the scanner will automatically receive a notification containing the new state of the button every time the state of the button changes.
-
-    ![](img/register_to_notifications.png)
-
-    **figure 5** How to register to notifications using Master Control Panel 4.0.5
+# EShw4
 
 
-1. Pressing Button 1 on your board updates the state of the button and sends a notification to the scanner. The new state of the button characteristic value should be equal to 0x01.
+### How to run
 
-    ![](img/button_pressed.png)
+##### STM32L4
+* 可以直接將整個project載下，用 mbed studio 將程式燒錄在 STM32L4開發板上。
+* 將 STM32L4 接電後即可以連到藍芽。
 
-    **figure 6** Notification of button pressed using Master Control Panel 4.0.5
+##### Raspberry Pi
+* 用 Raspberry Pi 跑 ble_client.py
 
-1. Releasing Button 1 on your board updates the state of the button and sends a notification to the scanner. The new state of the button characteristic value should be equal to 0x00.
+### Main Functions
+* STM32L4 Write/Read Messages
+* Client Write/Read Messages
+* Client (BLE Central) control the LEDs on STM32L4
+* Client monitor the Button state, notified when button pressed.
 
-    ![](img/button_depressed.png)
+##### Control LEDs
+* 功能：”LED1 on”, “LED1 off”, “LED2 on”, “LED2 off”
+* 當成功啟用功能，會印出”turning on/off LEDx...”
+* 如果輸入功能列表以外的功能，則印出”Wrong Input!”
+* 輸入”exit”，系統印出”Bye~!”，則與STM32L4斷連，結束program。
 
-    **figure 7** Notification of button depressed using Master Control Panel 4.0.5
+##### Monitor button state
+* 當STM32L4上的藍色按鈕被按下，則1會被寫入Button Characteristic。
+* 當program讀取到Button State為1，則印出”Button pressed.”!
+
+### Demo Result
+![image](https://user-images.githubusercontent.com/71332212/140938741-c43944f4-a6f3-4ce3-a589-e078a8e859e1.png)
+
